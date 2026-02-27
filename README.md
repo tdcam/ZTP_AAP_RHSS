@@ -2,5 +2,6 @@
 Demo for provisioning RHEL 9 servers with Ansible Automation Platform and Red 
 Hat Satellite Server.
 
-These playbooks will add a DHCP reservation (dhcp.yml), a DNS reservation,
-(dns.yml),
+If I've written this correctly, it will populate the Satellite server with the
+MAC address, IP address, and hostname, and set up the kickstart so when the 
+machine boots, it will kickstart and register correctly.
