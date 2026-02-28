@@ -36,6 +36,12 @@
       delegate_to: localhost
 
   tasks:
+    - name: Debug Environment Variables
+      debug:
+        msg: 
+          - "User from FOREMAN_USERNAME: {{ lookup('env', 'FOREMAN_USERNAME') }}"
+          - "User from SATELLITE_USERNAME: {{ lookup('env', 'SATELLITE_USERNAME') }}"
+      delegate_to: localhost
     - name: Create Managed Host in Satellite
       redhat.satellite.host:
         server_url: "{{ sat_url }}"
