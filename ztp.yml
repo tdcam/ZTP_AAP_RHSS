@@ -24,8 +24,8 @@
     - name: Verify IP is not already assigned in Satellite
       redhat.satellite.host_info:
         server_url: "{{ sat_url }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
+        username: "{{ foreman_username }}"
+        password: "{{ foreman_password }}"
         validate_certs: false
         search: "ip = {{ target_ip }}"
       register: ip_search
