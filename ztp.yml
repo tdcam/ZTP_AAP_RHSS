@@ -8,7 +8,7 @@
     target_mac: "{{ mac_address }}"
     target_ip: "{{ ip_address }}"
     target_hostname: "{{ vm_hostname }}"
-    sat_url: "{{ satellite_url }}" # Add this to your AAP Survey
+    sat_url: "{{ satellite_url }}"
 
     # Austin Environment Constants
     sat_org: "Red_Hat"
@@ -24,8 +24,8 @@
     - name: Verify IP is not already assigned in Satellite
       redhat.satellite.host_info:
         server_url: "{{ sat_url }}"
-        username: "{{ lookup('env', 'FOREMAN_USERNAME') }}"
-        password: "{{ lookup('env', 'FOREMAN_PASSWORD') }}"
+        username: "{{ satellite_username }}"
+        password: "{{ satellite_password }}"
         validate_certs: false
         search: "ip = {{ target_ip }}"
       register: ip_search
