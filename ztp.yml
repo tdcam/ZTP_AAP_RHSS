@@ -4,7 +4,7 @@
   connection: local
   gather_facts: false
   vars:
-    # ONLY things that change per-run go in the Survey
+    # From AAP Survey
     target_mac: "{{ mac_address }}"
     target_ip: "{{ ip_address }}"
     target_hostname: "{{ vm_hostname }}"
@@ -23,6 +23,10 @@
   tasks:
     - name: Create Managed Host in Satellite
       redhat.satellite.host:
+        # Crucial: Use the AAP Credential environment variables
+        server_url: "{{ lookup('env', 'FOREMAN_SERVER_URL') }}"
+        username: "{{ lookup('env', 'FOREMAN_USERNAME') }}"
+        password: "{{ lookup('env', 'FOREMAN_PASSWORD') }}"
         validate_certs: false
         name: "{{ target_hostname }}.{{ sat_domain }}"
         organization: "{{ sat_org }}"
@@ -46,9 +50,13 @@
 
     - name: Wait for the host to complete provisioning
       redhat.satellite.host_info:
+        server_url: "{{ lookup('env', 'FOREMAN_SERVER_URL') }}"
+        username: "{{ lookup('env', 'FOREMAN_USERNAME') }}"
+        password: "{{ lookup('env', 'FOREMAN_PASSWORD') }}"
         validate_certs: false
         name: "{{ target_hostname }}.{{ sat_domain }}"
       register: host_details
+      # The loop continues as long as build is True
       until: host_details.host.build == false
       retries: 45
       delay: 60
