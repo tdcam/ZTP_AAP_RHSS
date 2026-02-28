@@ -8,6 +8,7 @@
     target_mac: "{{ mac_address }}"
     target_ip: "{{ ip_address }}"
     target_hostname: "{{ vm_hostname }}"
+    sat_url: "https://nuc6.aus.redhat.com"
 
     # Austin Environment Constants
     sat_org: "Red_Hat"
@@ -15,29 +16,29 @@
     sat_domain: "aus.redhat.com"
     sat_subnet: "Austin Subnet"
 
-    # OS & Infrastructure Details
     target_os: "RedHat 9.6"
     target_arch: "x86_64"
-    # pxe_loader defines the PXE template (e.g. PXELinux or Grub2)
     target_pxe_loader: "PXELinux BIOS"
 
   pre_tasks:
     - name: Verify IP is not already assigned in Satellite
       redhat.satellite.host_info:
-        server_url: "{{ lookup('env', 'FOREMAN_SERVER_URL') }}"
+        server_url: "{{ sat_url }}"
         username: "{{ lookup('env', 'FOREMAN_USERNAME') }}"
         password: "{{ lookup('env', 'FOREMAN_PASSWORD') }}"
         validate_certs: false
         search: "ip = {{ target_ip }}"
       register: ip_search
-      # Fails the playbook if the IP is already in the Satellite database
-      failed_when: ip_search.hosts | length > 0
+      # Only runs if the previous task actually contacted the server
+      failed_when:
+        - ip_search.hosts is defined
+        - ip_search.hosts | length > 0
       delegate_to: localhost
 
   tasks:
     - name: Create Managed Host in Satellite
       redhat.satellite.host:
-        server_url: "{{ lookup('env', 'FOREMAN_SERVER_URL') }}"
+        server_url: "{{ sat_url }}"
         username: "{{ lookup('env', 'FOREMAN_USERNAME') }}"
         password: "{{ lookup('env', 'FOREMAN_PASSWORD') }}"
         validate_certs: false
@@ -63,14 +64,15 @@
 
     - name: Wait for the host to complete provisioning
       redhat.satellite.host_info:
-        server_url: "{{ lookup('env', 'FOREMAN_SERVER_URL') }}"
+        server_url: "{{ sat_url }}"
         username: "{{ lookup('env', 'FOREMAN_USERNAME') }}"
         password: "{{ lookup('env', 'FOREMAN_PASSWORD') }}"
         validate_certs: false
         name: "{{ target_hostname }}.{{ sat_domain }}"
       register: host_details
-      # Checks every minute for up to 45 minutes
-      until: host_details.host.build == false
+      until:
+        - host_details.host is defined
+        - host_details.host.build == false
       retries: 45
       delay: 60
       delegate_to: localhost
