@@ -15,15 +15,28 @@
     sat_domain: "aus.redhat.com"
     sat_subnet: "Austin Subnet"
 
+    # OS & Infrastructure Details
     target_os: "RedHat 9.6"
     target_arch: "x86_64"
-    kickstart_template: "Kickstart default"
-    pxe_template: "PXELinux default local boot"
+    # pxe_loader defines the PXE template (e.g. PXELinux or Grub2)
+    target_pxe_loader: "PXELinux BIOS"
+
+  pre_tasks:
+    - name: Verify IP is not already assigned in Satellite
+      redhat.satellite.host_info:
+        server_url: "{{ lookup('env', 'FOREMAN_SERVER_URL') }}"
+        username: "{{ lookup('env', 'FOREMAN_USERNAME') }}"
+        password: "{{ lookup('env', 'FOREMAN_PASSWORD') }}"
+        validate_certs: false
+        search: "ip = {{ target_ip }}"
+      register: ip_search
+      # Fails the playbook if the IP is already in the Satellite database
+      failed_when: ip_search.hosts | length > 0
+      delegate_to: localhost
 
   tasks:
     - name: Create Managed Host in Satellite
       redhat.satellite.host:
-        # Crucial: Use the AAP Credential environment variables
         server_url: "{{ lookup('env', 'FOREMAN_SERVER_URL') }}"
         username: "{{ lookup('env', 'FOREMAN_USERNAME') }}"
         password: "{{ lookup('env', 'FOREMAN_PASSWORD') }}"
@@ -37,8 +50,8 @@
         subnet: "{{ sat_subnet }}"
         operatingsystem: "{{ target_os }}"
         architecture: "{{ target_arch }}"
-        pxelinux_template: "{{ pxe_template }}"
-        provisioning_template: "{{ kickstart_template }}"
+        pxe_loader: "{{ target_pxe_loader }}"
+        provision_method: "build"
         managed: true
         build: true
         parameters:
@@ -56,7 +69,7 @@
         validate_certs: false
         name: "{{ target_hostname }}.{{ sat_domain }}"
       register: host_details
-      # The loop continues as long as build is True
+      # Checks every minute for up to 45 minutes
       until: host_details.host.build == false
       retries: 45
       delay: 60
