@@ -24,8 +24,8 @@
         mac: "{{ mac_address }}"
         hostgroup: "Austin-ZTP"
         root_pass: "RedHat123!"
-        managed: false
-        build: false
+        managed: true
+        build: true
         state: present
       delegate_to: localhost
         #        domain: "{{ sat_domain }}"
