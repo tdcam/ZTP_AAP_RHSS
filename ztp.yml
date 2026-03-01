@@ -22,15 +22,19 @@
         location: "Austin"
         ip: "{{ ip_address }}"
         mac: "{{ mac_address }}"
-        domain: "{{ sat_domain }}"
-        subnet: "Austin Subnet"
-        operatingsystem: "{{ target_os }}"
-        architecture: "x86_64"
-        pxe_loader: "PXELinux BIOS"
-        provision_method: "build"
-        managed: false
-        build: false
+        hostgroup: "Austin-ZTP"
+        managed: true
+        build: true
       delegate_to: localhost
+        #        domain: "{{ sat_domain }}"
+        #        subnet: "Austin Subnet"
+        #        operatingsystem: "{{ target_os }}"
+        #        architecture: "x86_64"
+        #        pxe_loader: "PXELinux BIOS"
+        #        provision_method: "build"
+        #        managed: false
+        #        build: false
+        #      delegate_to: localhost
 
     - name: Wait for the host to complete provisioning
       redhat.satellite.host_info:
