@@ -28,7 +28,7 @@
         architecture: "x86_64"
         pxe_loader: "PXELinux BIOS"
         provision_method: "build"
-        managed: true
+        managed: false
         build: false
       delegate_to: localhost
 
