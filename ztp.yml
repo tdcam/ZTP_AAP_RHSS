@@ -15,7 +15,7 @@
     sat_location: "Austin"
     sat_domain: "aus.redhat.com"
     sat_subnet: "Austin Subnet"
-    target_os: "Red Hat 9.6"
+    target_os: "RHEL 9.6"
     target_arch: "x86_64"
     target_pxe_loader: "PXELinux BIOS"
 
