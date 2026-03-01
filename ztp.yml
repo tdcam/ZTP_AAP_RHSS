@@ -11,21 +11,21 @@
     target_os: "RHEL 9.6" # Ensure this is the exact OS Name
 
   tasks:
-    - name: Create Managed Host in Satellite
+    - name: Create Managed Host (Skip Orchestration)
       redhat.satellite.host:
         server_url: "{{ sat_url }}"
         username: "{{ username }}"
         password: "{{ password }}"
         validate_certs: false
         name: "{{ vm_hostname }}.{{ sat_domain }}"
-        organization: "{{ sat_org }}"
+        organization: "Red Hat"
         location: "Austin"
         ip: "{{ ip_address }}"
         mac: "{{ mac_address }}"
         hostgroup: "Austin-ZTP"
         root_pass: "RedHat123!"
-        managed: true
-        build: true
+        # THE FIX: This prevents the failing SSL call to the Proxy
+        managed: false
         state: present
       delegate_to: localhost
         #        domain: "{{ sat_domain }}"
