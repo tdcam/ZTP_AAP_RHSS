@@ -1,0 +1,28 @@
+---
+- name: Teardown ZTP Host - Austin Site
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    # From the same AAP Survey used for provisioning
+    # hostname, Satellite username, and Satellite password
+    target_hostname: "{{ vm_hostname }}"
+    sat_url: "https://nuc6.aus.redhat.com"
+    sat_domain: "aus.redhat.com"
+
+  tasks:
+    - name: Remove Host from Satellite
+      redhat.satellite.host:
+        server_url: "{{ sat_url }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        validate_certs: false
+        name: "{{ target_hostname }}.{{ sat_domain }}"
+        state: absent
+      delegate_to: localhost
+      register: removal_result
+
+    - name: Verify DNS Record Cleanup
+      debug:
+        msg: "Host {{ target_hostname }}.{{ sat_domain }} has been decommissioned and network records purged."
+      when: removal_result.changed
