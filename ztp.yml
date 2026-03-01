@@ -22,7 +22,9 @@
   pre_tasks:
     - name: Verify IP is not already assigned in Satellite
       redhat.satellite.host_info:
-        server_url: "{{ sat_url }}"
+        server_url: "{{ lookup('env','SATELLITE_SERVER_URL') }}"
+        username: "{{ lookup('env','SATELLITE_USERNAME') }}"
+        password: "{{ lookup('env','SATELLITE_PASSWORD') }}"
         validate_certs: false
         search: "ip = {{ target_ip }}"
       register: ip_search
@@ -35,7 +37,9 @@
   tasks:
     - name: Create Managed Host in Satellite
       redhat.satellite.host:
-        server_url: "{{ sat_url }}"
+        server_url: "{{ lookup('env','SATELLITE_SERVER_URL') }}"
+        username: "{{ lookup('env','SATELLITE_USERNAME') }}"
+        password: "{{ lookup('env','SATELLITE_PASSWORD') }}"
         validate_certs: false
         name: "{{ target_hostname }}.{{ sat_domain }}"
         organization: "{{ sat_org }}"
@@ -59,7 +63,9 @@
 
     - name: Wait for the host to complete provisioning
       redhat.satellite.host_info:
-        server_url: "{{ sat_url }}"
+        server_url: "{{ lookup('env','SATELLITE_SERVER_URL') }}"
+        username: "{{ lookup('env','SATELLITE_USERNAME') }}"
+        password: "{{ lookup('env','SATELLITE_PASSWORD') }}"
         validate_certs: false
         name: "{{ target_hostname }}.{{ sat_domain }}"
       register: host_details
