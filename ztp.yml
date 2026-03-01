@@ -69,8 +69,9 @@
         validate_certs: false
         name: "{{ target_hostname }}.{{ sat_domain }}"
       register: host_details
+      # Added a check to ensure host_details.host isn't None before checking .build
       until:
-        - host_details.host is defined
+        - host_details.host is not none
         - host_details.host.build == false
       retries: 45
       delay: 60
