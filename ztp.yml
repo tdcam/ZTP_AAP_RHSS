@@ -29,7 +29,7 @@
         pxe_loader: "PXELinux BIOS"
         provision_method: "build"
         managed: true
-        build: true
+        build: false
       delegate_to: localhost
 
     - name: Wait for the host to complete provisioning
