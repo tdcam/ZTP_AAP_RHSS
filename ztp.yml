@@ -4,35 +4,11 @@
   connection: local
   gather_facts: false
   vars:
-    # From AAP Survey
-    target_mac: "{{ mac_address }}"
-    target_ip: "{{ ip_address }}"
-    target_hostname: "{{ vm_hostname }}"
+    # Use your survey variables here
     sat_url: "https://nuc6.aus.redhat.com"
-
-    # Austin Environment Constants
-    sat_org: "Red Hat"
-    sat_location: "Austin"
+    sat_org: "Red_Hat" # Ensure this is the LABEL
     sat_domain: "aus.redhat.com"
-    sat_subnet: "Austin Subnet"
-    target_os: "RHEL 9.6"
-    target_arch: "x86_64"
-    target_pxe_loader: "PXELinux BIOS"
-
-  pre_tasks:
-    - name: Verify IP is not already assigned in Satellite
-      redhat.satellite.host_info:
-        server_url: "{{ sat_url }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-        validate_certs: false
-        search: "ip = {{ target_ip }}"
-      register: ip_search
-      # Only runs if the previous task actually contacted the server
-      failed_when:
-        - ip_search.hosts is defined
-        - ip_search.hosts | length > 0
-      delegate_to: localhost
+    target_os: "RHEL 9.6" # Ensure this is the exact OS Name
 
   tasks:
     - name: Create Managed Host in Satellite
@@ -41,24 +17,19 @@
         username: "{{ username }}"
         password: "{{ password }}"
         validate_certs: false
-        name: "{{ target_hostname }}.{{ sat_domain }}"
+        name: "{{ vm_hostname }}.{{ sat_domain }}"
         organization: "{{ sat_org }}"
-        location: "{{ sat_location }}"
-        ip: "{{ target_ip }}"
-        mac: "{{ target_mac }}"
+        location: "Austin"
+        ip: "{{ ip_address }}"
+        mac: "{{ mac_address }}"
         domain: "{{ sat_domain }}"
-        subnet: "{{ sat_subnet }}"
+        subnet: "Austin Subnet"
         operatingsystem: "{{ target_os }}"
-        architecture: "{{ target_arch }}"
-        pxe_loader: "{{ target_pxe_loader }}"
+        architecture: "x86_64"
+        pxe_loader: "PXELinux BIOS"
         provision_method: "build"
         managed: true
         build: true
-        parameters:
-          - name: "package_upgrade"
-            value: "false"
-          - name: "additional_packages"
-            value: "rsync bash-completion"
       delegate_to: localhost
 
     - name: Wait for the host to complete provisioning
@@ -67,10 +38,11 @@
         username: "{{ username }}"
         password: "{{ password }}"
         validate_certs: false
-        name: "{{ target_hostname }}.{{ sat_domain }}"
+        name: "{{ vm_hostname }}.{{ sat_domain }}"
       register: host_details
-      # Added a check to ensure host_details.host isn't None before checking .build
-      until:
+      # Fails quickly if the host wasn't created
+      failed_when: host_details.host is none
+      until: 
         - host_details.host is not none
         - host_details.host.build == false
       retries: 45
