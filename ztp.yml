@@ -23,7 +23,8 @@
         ip: "{{ ip_address }}"
         mac: "{{ mac_address }}"
         hostgroup: "Austin-ZTP"
-        managed: false
+        managed: true
+        build: true
         state: present
       delegate_to: localhost
         #        domain: "{{ sat_domain }}"
