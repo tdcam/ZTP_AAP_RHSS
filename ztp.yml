@@ -11,7 +11,7 @@
     sat_url: "https://nuc6.aus.redhat.com"
 
     # Austin Environment Constants
-    sat_org: "Red_Hat"
+    sat_org: "Red Hat"
     sat_location: "Austin"
     sat_domain: "aus.redhat.com"
     sat_subnet: "Austin Subnet"
