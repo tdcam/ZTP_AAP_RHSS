@@ -11,7 +11,7 @@
     target_os: "RHEL 9.6" # Ensure this is the exact OS Name
 
   tasks:
-    - name: Create Managed Host (Skip Orchestration)
+    - name: Create Host Record in Satellite
       redhat.satellite.host:
         server_url: "{{ sat_url }}"
         username: "{{ username }}"
@@ -24,10 +24,14 @@
         mac: "{{ mac_address }}"
         hostgroup: "Austin-ZTP"
         root_pass: "RedHat123!"
-        # THE FIX: This prevents the failing SSL call to the Proxy
-        managed: false
+        managed: false # Bypass SSL EOF issues for now
         state: present
       delegate_to: localhost
+
+    - name: Force Build Mode and Orchestration
+      shell: "hammer host update --name {{ vm_hostname }}.{{ sat_domain }} --managed true --build true"
+      delegate_to: nuc6
+
         #        domain: "{{ sat_domain }}"
         #        subnet: "Austin Subnet"
         #        operatingsystem: "{{ target_os }}"
