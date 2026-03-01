@@ -8,7 +8,7 @@
     target_mac: "{{ mac_address }}"
     target_ip: "{{ ip_address }}"
     target_hostname: "{{ vm_hostname }}"
-    sat_url: "http://nuc6.aus.redhat.com"
+    sat_url: "nuc6.aus.redhat.com"
 
     # Austin Environment Constants
     sat_org: "Red_Hat"
@@ -23,8 +23,6 @@
     - name: Verify IP is not already assigned in Satellite
       redhat.satellite.host_info:
         server_url: "{{ sat_url }}"
-        username: "{{ foreman_username }}"
-        password: "{{ foreman_password }}"
         validate_certs: false
         search: "ip = {{ target_ip }}"
       register: ip_search
@@ -38,8 +36,6 @@
     - name: Create Managed Host in Satellite
       redhat.satellite.host:
         server_url: "{{ sat_url }}"
-        username: "{{ foreman_username }}"
-        password: "{{ foreman_password }}"
         validate_certs: false
         name: "{{ target_hostname }}.{{ sat_domain }}"
         organization: "{{ sat_org }}"
@@ -64,8 +60,6 @@
     - name: Wait for the host to complete provisioning
       redhat.satellite.host_info:
         server_url: "{{ sat_url }}"
-        username: "{{ foreman_username }}"
-        password: "{{ foreman_password }}"
         validate_certs: false
         name: "{{ target_hostname }}.{{ sat_domain }}"
       register: host_details
