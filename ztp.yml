@@ -6,7 +6,7 @@
   vars:
     # Use your survey variables here
     sat_url: "https://nuc6.aus.redhat.com"
-    sat_org: "Red_Hat" # Ensure this is the LABEL
+    sat_org: "Red Hat" # Ensure this is the LABEL
     sat_domain: "aus.redhat.com"
     target_os: "RHEL 9.6" # Ensure this is the exact OS Name
 
