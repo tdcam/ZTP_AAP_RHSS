@@ -8,10 +8,6 @@
     sat_url: "https://nuc6.aus.redhat.com"
     sat_org: "Red Hat"
     sat_domain: "aus.redhat.com"
-    # Ensure these come from your AAP Survey
-    # vm_hostname: "dev-web-001"
-    # ip_address: "172.31.100.23"
-    # mac_address: "52:54:00:95:03:1b"
 
   tasks:
     - name: Create Managed Host in Satellite
