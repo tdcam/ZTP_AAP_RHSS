@@ -8,11 +8,11 @@
     sat_url: "https://nuc6.aus.redhat.com"
     sat_org: "Red Hat"
     sat_domain: "aus.redhat.com"
+    vm_hostname: "{{ lifecycle }}-{{ class }}-{{ hostnumber }}"
 
   tasks:
     - name: Create Managed Host in Satellite
       redhat.satellite.host:
-        vm_hostname: "{{ lifecycle }}-{{ class }}-{{ hostnumber }}"
         server_url: "{{ sat_url }}"
         username: "{{ username }}"
         password: "{{ password }}"
