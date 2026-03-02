@@ -12,7 +12,7 @@
   tasks:
     - name: Create Managed Host in Satellite
       redhat.satellite.host:
-        vm_hostname: "{{ lifecycle }}"-"{{ class }}"-"{{ hostnumber }}"
+        vm_hostname: "{{ lifecycle }}-{{ class }}-{{ hostnumber }}"
         server_url: "{{ sat_url }}"
         username: "{{ username }}"
         password: "{{ password }}"
