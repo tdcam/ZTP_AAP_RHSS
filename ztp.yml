@@ -3,44 +3,34 @@
   hosts: localhost
   connection: local
   gather_facts: false
+
   vars:
-    # Use your survey variables here
     sat_url: "https://nuc6.aus.redhat.com"
-    sat_org: "Red Hat" # Ensure this is the LABEL
+    sat_org: "Red Hat"
     sat_domain: "aus.redhat.com"
-    target_os: "RHEL 9.6" # Ensure this is the exact OS Name
+    # Ensure these come from your AAP Survey
+    # vm_hostname: "dev-web-001"
+    # ip_address: "172.31.100.23"
+    # mac_address: "52:54:00:95:03:1b"
 
   tasks:
-    - name: Create Host Record in Satellite
+    - name: Create Managed Host in Satellite
       redhat.satellite.host:
         server_url: "{{ sat_url }}"
         username: "{{ username }}"
         password: "{{ password }}"
         validate_certs: false
         name: "{{ vm_hostname }}.{{ sat_domain }}"
-        organization: "Red Hat"
+        organization: "{{ sat_org }}"
         location: "Austin"
         ip: "{{ ip_address }}"
         mac: "{{ mac_address }}"
         hostgroup: "Austin-ZTP"
         root_pass: "RedHat123!"
-        managed: false # Bypass SSL EOF issues for now
+        managed: true     # Enable orchestration (DHCP/DNS/TFTP)
+        build: true       # Put host in 'Pending Installation' mode
         state: present
       delegate_to: localhost
-
-    - name: Force Build Mode and Orchestration
-      shell: "hammer host update --name {{ vm_hostname }}.{{ sat_domain }} --managed true --build true"
-      delegate_to: nuc6
-
-        #        domain: "{{ sat_domain }}"
-        #        subnet: "Austin Subnet"
-        #        operatingsystem: "{{ target_os }}"
-        #        architecture: "x86_64"
-        #        pxe_loader: "PXELinux BIOS"
-        #        provision_method: "build"
-        #        managed: false
-        #        build: false
-        #      delegate_to: localhost
 
     - name: Wait for the host to complete provisioning
       redhat.satellite.host_info:
@@ -50,11 +40,9 @@
         validate_certs: false
         name: "{{ vm_hostname }}.{{ sat_domain }}"
       register: host_details
-      # Fails quickly if the host wasn't created
-      failed_when: host_details.host is none
-      until: 
+      until:
         - host_details.host is not none
         - host_details.host.build == false
-      retries: 45
+      retries: 60
       delay: 60
       delegate_to: localhost
