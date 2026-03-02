@@ -25,8 +25,8 @@
         location: "Austin"
         ip: "{{ ip_address }}"
         mac: "{{ mac_address }}"
-        hostgroup: "Austin-ZTP"
-        root_pass: "RedHat123!"
+        hostgroup: "{{ hostgroup }}"
+          #root_pass: "RedHat123!"
         managed: true     # Enable orchestration (DHCP/DNS/TFTP)
         build: true       # Put host in 'Pending Installation' mode
         state: present
