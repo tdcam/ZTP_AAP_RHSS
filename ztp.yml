@@ -12,6 +12,7 @@
   tasks:
     - name: Create Managed Host in Satellite
       redhat.satellite.host:
+        vm_hostname: "{{ lifecycle }}"-"{{ class }}"-"{{ hostnumber }}"
         server_url: "{{ sat_url }}"
         username: "{{ username }}"
         password: "{{ password }}"
@@ -21,7 +22,7 @@
         location: "Austin"
         ip: "{{ ip_address }}"
         mac: "{{ mac_address }}"
-        hostgroup: "{{ hostgroup }}"
+        hostgroup: "rhel9-{{ lifecycle }}-host-group"
         root_pass: "RedHat123!"
         managed: true     # Enable orchestration (DHCP/DNS/TFTP)
         build: true       # Put host in 'Pending Installation' mode
