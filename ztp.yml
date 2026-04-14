@@ -5,9 +5,9 @@
   gather_facts: false
 
   vars:
-    sat_url: "https://nuc6.aus.redhat.com"
+    sat_url: "https://satellite.redhat.lan"
     sat_org: "Red Hat"
-    sat_domain: "aus.redhat.com"
+    sat_domain: "redhat.lan"
     vm_hostname: "{{ lifecycle }}-{{ class }}-{{ hostnumber }}"
 
   tasks:
@@ -23,7 +23,7 @@
         ip: "{{ ip_address }}"
         mac: "{{ mac_address }}"
         hostgroup: "rhel9-{{ lifecycle }}-host-group"
-        root_pass: "RedHat123!"
+        root_pass: "{{ root_pass }}"
         managed: true     # Enable orchestration (DHCP/DNS/TFTP)
         build: true       # Put host in 'Pending Installation' mode
         state: present

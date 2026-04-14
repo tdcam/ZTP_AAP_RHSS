@@ -7,8 +7,8 @@
     # From the same AAP Survey used for provisioning
     # hostname, Satellite username, and Satellite password
     target_hostname: "{{ vm_hostname }}"
-    sat_url: "https://nuc6.aus.redhat.com"
-    sat_domain: "aus.redhat.com"
+    sat_url: "https://satellite.redhat.lan"
+    sat_domain: "redhat.lan"
 
   tasks:
     - name: Remove Host from Satellite
