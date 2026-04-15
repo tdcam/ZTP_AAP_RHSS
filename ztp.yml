@@ -5,9 +5,9 @@
   gather_facts: false
 
   vars:
-    sat_url: "https://satellite.redhat.lan"
+    sat_url: "https://nuc6.aus.redhat.com"
     sat_org: "Red Hat"
-    sat_domain: "redhat.lan"
+    sat_domain: "aus.redhat.com"
     vm_hostname: "{{ lifecycle }}-{{ class }}-{{ hostnumber }}"
 
   tasks:
